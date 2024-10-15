@@ -38,6 +38,38 @@ public class Main {
         }
 
 
+        System.out.println("Welcome to the ledger screen. Please select one of the following options: "+
+                "\n" + "A - All" +
+                "\n" + "D - Deposits" +
+                "\n" + "P - Payments" +
+                "\n" + "R - Reports" +
+                "\n" + "H - Home"
+        );
+
+        // for ledger options
+        // how to connect ledger screen to previous switch statement??
+        String ledgerScreenOptions = "";
+        ledgerScreenOptions = reader.nextLine();
+        switch (ledgerScreenOptions.toUpperCase()){
+            case "A": // display all entries (displaying all objects, is an array needed?)
+
+                break;
+            case "D": // only display deposits into the account
+
+                reader.nextLine();
+                break;
+            case "P": // display only negative entries/ payments (if statement)
+
+                break;
+            case "R": // whole new screen to show reports :D
+                ;
+                break;
+            case "H": // to go back to home screen
+
+                break;
+            default:
+                System.out.println("That is not a valid selection. Please try again.");
+        }
        reader.close();
     }
 }
