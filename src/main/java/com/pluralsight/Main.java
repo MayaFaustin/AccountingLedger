@@ -4,8 +4,12 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.Collection;
 import java.time.format.DateTimeFormatter;
+
+//static ArrayList<Transactions> allTransactions = new ArrayList<Transactions>();
 
 public class Main {
     static Scanner reader = new Scanner(System.in);
@@ -26,12 +30,10 @@ public class Main {
                 "\n L - Ledger" +
                 "\n X - Exit"
         );
-
         displayHomeScreen();
 
     }
 
-        // this is gonna be the home screen
 
     //while loop to keep home screen running unless x is selected
     public static void displayHomeScreen(){
@@ -42,13 +44,24 @@ public class Main {
                 switch (homeScreenOptions.toUpperCase()) {
                     case "D": // prompt for deposit info + save to csv file
                         makeDeposit();
-                        //having to store inputs in array
+                        System.out.println("Would you like to make another deposit?" +
+                                "\n" + "Select yes (y) or no (n)");
+                        String response = reader.nextLine();
+                        if(response.equalsIgnoreCase("n")) {
+                            break;
+                        }
                         break;
                     case "P": // prompt for debit info + save to csv file
                         makePayment();
+                        System.out.println("Would you like to make another payment?" +
+                                "\n" + "Select yes (y) or no (n)");
+                        response = reader.nextLine();
+                        if(response.equalsIgnoreCase("n")) {
+                            continue;
+                        }
                         break;
                     case "L": // this is gonna display the ledger screen
-                        System.out.println("ahhhhhh");
+                        displayLedgerScreen();
                         break;
                     case "X": // to exit the program
                         break;
@@ -64,12 +77,13 @@ public class Main {
 
     public static void makeDeposit(){
         System.out.println("You've selected \"Add Deposit\"" +
-                "\n + Please enter a description of your deposit: ");
+                "\n Please enter a description of your deposit: ");
         String description = reader.nextLine();
         System.out.println("Enter the vendor information: ");
         String vendor = reader.nextLine();
         System.out.println("Enter the amount of your deposit: ");
         double depositAmount = reader.nextDouble();
+       // allTransactions.add(new Transactions("","",description,
         String transactions = date + "|" + time + "|" + description + "|" + vendor + "|" + depositAmount;
         try {
             // open the file
@@ -106,6 +120,7 @@ public class Main {
         String vendor = reader.nextLine();
         System.out.println("Enter the amount of your payment: ");
         double paymentAmount = reader.nextDouble();
+        paymentAmount = paymentAmount *= -1;
         String transactions = date + "|" + time + "|" + description + "|" + vendor + "|" + paymentAmount;
         try {
             // open the file
@@ -121,12 +136,9 @@ public class Main {
             e.printStackTrace();
         }
         //currently trying to get out of payments if selecting no
-        System.out.println("Would you like to make another payment?" +
-                "\n" + "Select yes (y) or no (n)");
-
     }
         // (incomplete) creating method for ledger screen
-    public static void ledgerScreen() {
+    public static void displayLedgerScreen() {
 
             // displaying selection options to user
             System.out.println("Welcome to the ledger screen. Please select one of the following options: " +
