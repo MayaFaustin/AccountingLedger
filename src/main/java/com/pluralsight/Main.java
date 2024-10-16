@@ -1,5 +1,6 @@
 package com.pluralsight;
 import java.io.FileWriter;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -8,74 +9,124 @@ import java.time.format.DateTimeFormatter;
 
 public class Main {
     static Scanner reader = new Scanner(System.in);
+    static LocalTime timeToday = LocalTime.now();
+    static LocalDate dateToday = LocalDate.now();
+    static DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    static DateTimeFormatter tf = DateTimeFormatter.ofPattern("HH:mm:ss");
+    static String date = dateToday.format(df);
+    static String time = timeToday.format(tf);
+
 
     public static void main(String[] args) {
 
-        // formatting for date + time
-        DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        DateTimeFormatter.ofPattern("HH:mm:ss");
-
-        System.out.println("Hello! Welcome to the CLI Finance Application. To get started, please select one of the following options: " +
-                "\n" + "D - Add Deposit" +
-                "\n" + "P - Make a Payment (Debit)" +
-                "\n" + "L - Ledger" +
-                "\n" + "X - Exit"
+        System.out.println("Hello! Welcome to the CLI Finance Application." +
+                "\n To get started, please select one of the following options: " +
+                "\n D - Add Deposit" +
+                "\n P - Make a Payment (Debit)" +
+                "\n L - Ledger" +
+                "\n X - Exit"
         );
 
-        //creating file to write to
-        try {
-            FileWriter writer = new FileWriter("transactions.csv");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        displayHomeScreen();
+
     }
 
         // this is gonna be the home screen
 
-    // (incomplete) creating a method to display the home screen
+    //while loop to keep home screen running unless x is selected
     public static void displayHomeScreen(){
             String homeScreenOptions = "";
             homeScreenOptions = reader.nextLine();
             // setting up a switch statement for the home screen options
-            //maybe need a for loop to select other options??
-            while () {
+          while (!homeScreenOptions.equalsIgnoreCase("x")) {
                 switch (homeScreenOptions.toUpperCase()) {
-
-                    // was going to include date + time info in final method? when writing to file, so i was declaring the variables here
-                    // String date = (DateTimeFormatter.ofPattern("yyyy-MM-dd").toString());
-                    // String time = (DateTimeFormatter.ofPattern("HH:mm:ss").toString());
-
-                    //date|time|description|vendor|amount
                     case "D": // prompt for deposit info + save to csv file
-                        System.out.println("You've selected \"Add Deposit\"" +
-                                "\n" + "Please enter a description of your deposit: ");
-                        String description = reader.nextLine();
-                        System.out.println("Enter the vendor information: ");
-                        String vendor = reader.nextLine();
-                        System.out.println("Enter the amount of your deposit: ");
-                        Double depositAmount = reader.nextDouble();
+                        makeDeposit();
                         //having to store inputs in array
                         break;
                     case "P": // prompt for debit info + save to csv file
-                        System.out.println("What is your debit card number?");
-                        int debitInfo = reader.nextInt();
-                        reader.nextLine();
+                        makePayment();
                         break;
                     case "L": // this is gonna display the ledger screen
                         System.out.println("ahhhhhh");
                         break;
                     case "X": // to exit the program
-                        System.out.println("Thank you for visiting the CLI Finance Application. Goodbye...");
-                        System.exit(0);
                         break;
                     default:
                         System.out.println("That is not a valid selection. Please try again.");
                 }
             }
+
+          // after selecting x
+        System.out.println("Thank you for visiting the CLI Finance Application. Goodbye...");
         }
 
+
+    public static void makeDeposit(){
+        System.out.println("You've selected \"Add Deposit\"" +
+                "\n + Please enter a description of your deposit: ");
+        String description = reader.nextLine();
+        System.out.println("Enter the vendor information: ");
+        String vendor = reader.nextLine();
+        System.out.println("Enter the amount of your deposit: ");
+        double depositAmount = reader.nextDouble();
+        String transactions = date + "|" + time + "|" + description + "|" + vendor + "|" + depositAmount;
+        try {
+            // open the file
+            FileWriter fileWriter = new FileWriter("transactions.csv");
+            // write to the file
+            BufferedWriter bufWriter = new BufferedWriter(fileWriter);
+            bufWriter.write(transactions);
+            System.out.println("Success! A new deposit was added :D");
+            bufWriter.close();
+        }
+        catch (IOException e) {
+            System.out.println("An error has occurred.");
+            e.printStackTrace();
+        }
+
+    }
+
+    public static void makePayment() {
+        System.out.println("You've selected \"Make a Payment\"" +
+                "\n" + "Please enter a description of your payment: ");
+//                + "\n Please enter your four digit pin:
+//        int pin;
+//        pin = reader.nextInt();
+//        reader.nextLine(); // eating the line
+        // why does it continue after entering the wrong pin?
+        //was trying to create a pin and do some validation, gonna come back to it later
+//        while(pin == 2001){
+//            System.out.println("Welcome! Please enter a description of your payment: ");
+//        }if(pin != 2001){
+//            System.out.println("That is incorrect. Please try again.");
+//        }
+        String description = reader.nextLine();
+        System.out.println("Enter the vendor information: ");
+        String vendor = reader.nextLine();
+        System.out.println("Enter the amount of your payment: ");
+        double paymentAmount = reader.nextDouble();
+        String transactions = date + "|" + time + "|" + description + "|" + vendor + "|" + paymentAmount;
+        try {
+            // open the file
+            FileWriter fileWriter = new FileWriter("transactions.csv");
+            // write to the file
+            BufferedWriter bufWriter = new BufferedWriter(fileWriter);
+            bufWriter.write(transactions);
+            System.out.println("Success! A new payment was made :D");
+            bufWriter.close();
+        }
+        catch (IOException e) {
+            System.out.println("An error has occurred.");
+            e.printStackTrace();
+        }
+        //currently trying to get out of payments if selecting no
+        System.out.println("Would you like to make another payment?" +
+                "\n" + "Select yes (y) or no (n)");
+
+    }
         // (incomplete) creating method for ledger screen
-        public static void ledgerScreen() {
+    public static void ledgerScreen() {
 
             // displaying selection options to user
             System.out.println("Welcome to the ledger screen. Please select one of the following options: " +
