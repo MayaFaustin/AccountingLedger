@@ -79,23 +79,11 @@ public class Main {
             System.out.println("An error has occurred.");
             e.printStackTrace();
         }
-
     }
 
     public static void makePayment() {
         System.out.println("You've selected \"Make a Payment\"" +
                 "\n" + "Please enter a description of your payment: ");
-//                + "\n Please enter your four digit pin:
-//        int pin;
-//        pin = reader.nextInt();
-//        reader.nextLine(); // eating the line
-        // why does it continue after entering the wrong pin?
-        //was trying to create a pin and do some validation, gonna come back to it later
-//        while(pin == 2001){
-//            System.out.println("Welcome! Please enter a description of your payment: ");
-//        }if(pin != 2001){
-//            System.out.println("That is incorrect. Please try again.");
-//        }
         String description = reader.nextLine();
         System.out.println("Enter the vendor information: ");
         String vendor = reader.nextLine();
@@ -147,7 +135,7 @@ public class Main {
                         displayPayments();
                         break;
                     case "R": // whole new screen to show reports :D
-                        ;
+                        displayReports();
                         break;
                     case "H": // to go back to home screen
                         break;
@@ -169,7 +157,7 @@ public class Main {
             throw new RuntimeException(e);
         }
     }
-    public static <allTransactions> void displayDeposits(){
+    public static void displayDeposits(){
 
         try {
             BufferedReader bufReader = new BufferedReader(new FileReader("transactions.csv"));
@@ -213,5 +201,44 @@ public class Main {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+    public static void displayReports() {
+        String reportOptions;
+        do {
+
+            System.out.println("Welcome to your reports. Please select one of the following options: " +
+                    "\n" + "1 - Month to Date" +
+                    "\n" + "2 - Previous Month" +
+                    "\n" + "3 - Year to Date" +
+                    "\n" + "4 - Previous Year" +
+                    "\n" + "5 - Search by Vendor" +
+                    "\n" + "0 - Back");
+            reportOptions = reader.nextLine();
+           // reader.nextLine();
+            switch (reportOptions) {
+                case "1":
+                    System.out.println("testing1");
+                    break;
+                case "2":
+                    System.out.println("testing2");
+                    break;
+                case "3":
+                    System.out.println("testing3");
+                    break;
+                case "4":
+                    System.out.println("testing4");
+                    break;
+                case "5":
+                    System.out.println("testing5");
+                    break;
+                case "0":
+                    break;
+                default:
+                    System.out.println("That is not a valid selection. Please try again.");
+            }
+        } while (!reportOptions.equals("0"));
+    }
+    public static void displayMonthToDate(){
+
     }
 }
