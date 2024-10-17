@@ -17,25 +17,22 @@ public class Main {
     static String time = timeToday.format(tf);
     static ArrayList<Transactions> allTransactions = new ArrayList<Transactions>();
 
-    public static void main(String[] args) {
-
-        System.out.println("Hello! Welcome to the CLI Finance Application." +
-                "\n To get started, please select one of the following options: " +
-                "\n D - Add Deposit" +
-                "\n P - Make a Payment (Debit)" +
-                "\n L - Ledger" +
-                "\n X - Exit"
-        );
+    public static void main(String[] args) throws IOException {
         displayHomeScreen();
-
     }
 
     //while loop to keep home screen running unless x is selected
-    public static void displayHomeScreen(){
+    public static void displayHomeScreen() throws IOException {
             String homeScreenOptions = "";
-
             // setting up a switch statement for the home screen options
           while (!homeScreenOptions.equalsIgnoreCase("x")) {
+              System.out.println("Hello! Welcome to the CLI Finance Application." +
+                      "\n To get started, please select one of the following options: " +
+                      "\n D - Add Deposit" +
+                      "\n P - Make a Payment (Debit)" +
+                      "\n L - Ledger" +
+                      "\n X - Exit"
+              );
               homeScreenOptions = reader.nextLine();
                 switch (homeScreenOptions.toUpperCase()) {
                     case "D": // prompt for deposit info + save to csv file
@@ -57,7 +54,6 @@ public class Main {
 
         }
 
-
     public static void makeDeposit(){
         System.out.println("You've selected \"Add Deposit\"" +
                 "\n Please enter a description of your deposit: ");
@@ -75,7 +71,7 @@ public class Main {
             BufferedWriter bufWriter = new BufferedWriter(fileWriter);
             bufWriter.write(transactions);
             bufWriter.newLine();
-            allTransactions.add(new Transactions("","","","",0));
+           // allTransactions.add(new Transactions("","","","",0));
             System.out.println("Success! A new deposit was added :D");
             bufWriter.close();
         }
@@ -115,7 +111,7 @@ public class Main {
             BufferedWriter bufWriter = new BufferedWriter(fileWriter);
             bufWriter.write(transactions);
             bufWriter.newLine();
-            allTransactions.add(new Transactions("","","","",0));
+           // allTransactions.add(new Transactions("","","","",0));
             System.out.println("Success! A new payment was made :D");
             bufWriter.close();
         }
@@ -126,50 +122,92 @@ public class Main {
         //currently trying to get out of payments if selecting no
     }
         // (incomplete) creating method for ledger screen
-    public static void displayLedgerScreen() {
+    public static void displayLedgerScreen() throws IOException {
 
-            // displaying selection options to user
-            System.out.println("Welcome to the ledger screen. Please select one of the following options: " +
-                    "\n" + "A - All" +
-                    "\n" + "D - Deposits" +
-                    "\n" + "P - Payments" +
-                    "\n" + "R - Reports" +
-                    "\n" + "H - Home"
-            );
+        String ledgerScreenOptions = "";
+            do {
+                System.out.println("Welcome to the ledger screen. Please select one of the following options: " +
+                        "\n" + "A - All" +
+                        "\n" + "D - Deposits" +
+                        "\n" + "P - Payments" +
+                        "\n" + "R - Reports" +
+                        "\n" + "H - Home");
 
-            // for ledger options
-            // going to call method inside home screen method :D
-            String ledgerScreenOptions = "";
-            ledgerScreenOptions = reader.nextLine();
-            switch (ledgerScreenOptions.toUpperCase()) {
-                case "A": // display all entries (displaying all objects, is an array needed?)
-                    displayAllEnteries();
-                    break;
-                case "D": // only display deposits into the account
-
-                    reader.nextLine();
-                    break;
-                case "P": // display only negative entries/ payments (if statement)
-
-                    break;
-                case "R": // whole new screen to show reports :D
-                    ;
-                    break;
-                case "H": // to go back to home screen
-
-                    break;
-                default:
-                    System.out.println("That is not a valid selection. Please try again.");
-            }
-
+                // for ledger options
+                // going to call method inside home screen method :D
+                ledgerScreenOptions = reader.nextLine();
+                switch (ledgerScreenOptions.toUpperCase()) {
+                    case "A": // display all entries (displaying all objects, is an array needed?)
+                        displayAllEntries();
+                        break;
+                    case "D":
+                        displayDeposits();
+                        break;
+                    case "P":
+                        displayPayments();
+                        break;
+                    case "R": // whole new screen to show reports :D
+                        ;
+                        break;
+                    case "H": // to go back to home screen
+                        break;
+                    default:
+                        System.out.println("That is not a valid selection. Please try again.");
+                }
+            } while(!ledgerScreenOptions.equalsIgnoreCase("h"));
         }
 
-    public static void displayAllEnteries() {
+    public static void displayAllEntries() {
         try {
             BufferedReader bufReader = new BufferedReader(new FileReader("transactions.csv"));
             String input = bufReader.readLine();
             while((input = bufReader.readLine()) != null) {
                 System.out.println(input);
+            }
+            bufReader.close();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public static <allTransactions> void displayDeposits(){
+
+        try {
+            BufferedReader bufReader = new BufferedReader(new FileReader("transactions.csv"));
+            String input = bufReader.readLine();
+            while((input = bufReader.readLine()) != null) {
+              String[] splittingFields = input.split("\\|");
+              String date = splittingFields[0];
+              String time = splittingFields[1];
+              String description = splittingFields[2];
+              String vendor = splittingFields[3];
+              double amount = Double.parseDouble(splittingFields[4]);
+              Transactions t = new Transactions(date, time, description, vendor, amount);
+                if (t.getAmount() > 0) {
+                    System.out.println(input);
+                }
+            }
+            bufReader.close();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public static void displayPayments() throws IOException {
+        try {
+
+            BufferedReader bufReader = new BufferedReader(new FileReader("transactions.csv"));
+            String input = bufReader.readLine();
+            while ((input = bufReader.readLine()) != null) {
+                //splitting the fields to get amount
+                String[] splittingFields = input.split("\\|");
+                String date = splittingFields[0];
+                String time = splittingFields[1];
+                String description = splittingFields[2];
+                String vendor = splittingFields[3];
+                double amount = Double.parseDouble(splittingFields[4]);
+                Transactions t = new Transactions(date, time, description, vendor, amount);
+                if (t.getAmount() < 0) {
+                    System.out.println(input);
+                }
             }
             bufReader.close();
         } catch (Exception e) {
