@@ -1,15 +1,11 @@
 package com.pluralsight;
-import java.io.FileWriter;
-import java.io.BufferedWriter;
-import java.io.IOException;
+import java.io.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.Collection;
 import java.time.format.DateTimeFormatter;
-
-//static ArrayList<Transactions> allTransactions = new ArrayList<Transactions>();
 
 public class Main {
     static Scanner reader = new Scanner(System.in);
@@ -19,7 +15,7 @@ public class Main {
     static DateTimeFormatter tf = DateTimeFormatter.ofPattern("HH:mm:ss");
     static String date = dateToday.format(df);
     static String time = timeToday.format(tf);
-
+    static ArrayList<Transactions> allTransactions = new ArrayList<Transactions>();
 
     public static void main(String[] args) {
 
@@ -34,44 +30,31 @@ public class Main {
 
     }
 
-
     //while loop to keep home screen running unless x is selected
     public static void displayHomeScreen(){
             String homeScreenOptions = "";
-            homeScreenOptions = reader.nextLine();
+
             // setting up a switch statement for the home screen options
           while (!homeScreenOptions.equalsIgnoreCase("x")) {
+              homeScreenOptions = reader.nextLine();
                 switch (homeScreenOptions.toUpperCase()) {
                     case "D": // prompt for deposit info + save to csv file
                         makeDeposit();
-                        System.out.println("Would you like to make another deposit?" +
-                                "\n" + "Select yes (y) or no (n)");
-                        String response = reader.nextLine();
-                        if(response.equalsIgnoreCase("n")) {
-                            break;
-                        }
                         break;
                     case "P": // prompt for debit info + save to csv file
                         makePayment();
-                        System.out.println("Would you like to make another payment?" +
-                                "\n" + "Select yes (y) or no (n)");
-                        response = reader.nextLine();
-                        if(response.equalsIgnoreCase("n")) {
-                            continue;
-                        }
                         break;
                     case "L": // this is gonna display the ledger screen
                         displayLedgerScreen();
                         break;
                     case "X": // to exit the program
+                        System.out.println("Thank you for visiting the CLI Finance Application. Goodbye...");
                         break;
                     default:
                         System.out.println("That is not a valid selection. Please try again.");
                 }
             }
 
-          // after selecting x
-        System.out.println("Thank you for visiting the CLI Finance Application. Goodbye...");
         }
 
 
@@ -82,15 +65,17 @@ public class Main {
         System.out.println("Enter the vendor information: ");
         String vendor = reader.nextLine();
         System.out.println("Enter the amount of your deposit: ");
-        double depositAmount = reader.nextDouble();
-       // allTransactions.add(new Transactions("","",description,
-        String transactions = date + "|" + time + "|" + description + "|" + vendor + "|" + depositAmount;
+        double amount = reader.nextDouble();
+
+        String transactions = date + "|" + time + "|" + description + "|" + vendor + "|" + amount;
         try {
             // open the file
-            FileWriter fileWriter = new FileWriter("transactions.csv");
+            FileWriter fileWriter = new FileWriter("transactions.csv", true);
             // write to the file
             BufferedWriter bufWriter = new BufferedWriter(fileWriter);
             bufWriter.write(transactions);
+            bufWriter.newLine();
+            allTransactions.add(new Transactions("","","","",0));
             System.out.println("Success! A new deposit was added :D");
             bufWriter.close();
         }
@@ -119,15 +104,18 @@ public class Main {
         System.out.println("Enter the vendor information: ");
         String vendor = reader.nextLine();
         System.out.println("Enter the amount of your payment: ");
-        double paymentAmount = reader.nextDouble();
-        paymentAmount = paymentAmount *= -1;
-        String transactions = date + "|" + time + "|" + description + "|" + vendor + "|" + paymentAmount;
+        double amount = reader.nextDouble();
+        amount = amount *= -1;
+        String transactions = date + "|" + time + "|" + description + "|" + vendor + "|" + amount;
         try {
             // open the file
-            FileWriter fileWriter = new FileWriter("transactions.csv");
+            //appended so that file isn't being constantly written over
+            FileWriter fileWriter = new FileWriter("transactions.csv", true);
             // write to the file
             BufferedWriter bufWriter = new BufferedWriter(fileWriter);
             bufWriter.write(transactions);
+            bufWriter.newLine();
+            allTransactions.add(new Transactions("","","","",0));
             System.out.println("Success! A new payment was made :D");
             bufWriter.close();
         }
@@ -155,7 +143,7 @@ public class Main {
             ledgerScreenOptions = reader.nextLine();
             switch (ledgerScreenOptions.toUpperCase()) {
                 case "A": // display all entries (displaying all objects, is an array needed?)
-
+                    displayAllEnteries();
                     break;
                 case "D": // only display deposits into the account
 
@@ -174,6 +162,18 @@ public class Main {
                     System.out.println("That is not a valid selection. Please try again.");
             }
 
-            reader.close();
         }
+
+    public static void displayAllEnteries() {
+        try {
+            BufferedReader bufReader = new BufferedReader(new FileReader("transactions.csv"));
+            String input = bufReader.readLine();
+            while((input = bufReader.readLine()) != null) {
+                System.out.println(input);
+            }
+            bufReader.close();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

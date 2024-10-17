@@ -3,18 +3,17 @@ package com.pluralsight;
 public class Transactions {
 
     // fields for transactions
-
     private String date;
     private String time;
-    private String item;
+    private String description;
     private String vendor;
     private double amount;
 
     // constructors (w/ parameters + empty) :D
-    public Transactions(String _date, String _time, String _item, String _vendor, double _amount){
+    public Transactions(String _date, String _time, String _description, String _vendor, double _amount){
         this.date = _date;
         this.time = _time;
-        this.item = _item;
+        this.description = _description;
         this.vendor = _vendor;
         this.amount = _amount;
     }
@@ -38,11 +37,11 @@ public class Transactions {
         this.time = time;
     }
 
-    public String getItem() {
-        return item;
+    public String getDescription() {
+        return description;
     }
-    public void setItem(String item) {
-        this.item = item;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getVendor() {
@@ -58,4 +57,5 @@ public class Transactions {
     public void setAmount(double amount) {
         this.amount = amount;
     }
+
 }
