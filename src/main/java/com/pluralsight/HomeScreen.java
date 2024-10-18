@@ -1,4 +1,5 @@
 package com.pluralsight;
+
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -18,6 +19,7 @@ public class HomeScreen {
     static String time = timeToday.format(tf);
 
 
+    // prompting user for deposit information
     public static void makeDeposit() {
         System.out.println("You've selected \"Add Deposit\"" +
                 "\n Please enter a description of your deposit: ");
@@ -27,6 +29,7 @@ public class HomeScreen {
         System.out.println("Enter the amount of your deposit: ");
         double amount = reader.nextDouble();
 
+        // saving to the file
         String transactions = date + "|" + time + "|" + description + "|" + vendor + "|" + amount;
         try {
             FileWriter fileWriter = new FileWriter("transactions.csv", true);
@@ -41,6 +44,7 @@ public class HomeScreen {
         }
     }
 
+    // prompting user for payment information
     public static void makePayment() {
         System.out.println("You've selected \"Make a Payment\"" +
                 "\n" + "Please enter a description of your payment: ");
@@ -48,8 +52,10 @@ public class HomeScreen {
         System.out.println("Enter the vendor information: ");
         String vendor = reader.nextLine();
         System.out.println("Enter the amount of your payment: ");
+        // making sure payments are negative
         double amount = reader.nextDouble();
         amount = amount *= -1;
+        // saving to file
         String transactions = date + "|" + time + "|" + description + "|" + vendor + "|" + amount;
         try {
             FileWriter fileWriter = new FileWriter("transactions.csv", true);
@@ -64,9 +70,12 @@ public class HomeScreen {
         }
     }
 
-    public static void displayLedgerScreen() throws IOException {
 
+    // for ledger options
+    // going to call method inside home screen method :D
+    public static void displayLedgerScreen() throws IOException {
         String ledgerScreenOptions = "";
+        // setting up a do while loop for ledger, loop will run unless h is selected
         do {
             System.out.println("Welcome to the ledger screen. Please select one of the following options: " +
                     "\n" + "A - All" +
@@ -75,11 +84,9 @@ public class HomeScreen {
                     "\n" + "R - Reports" +
                     "\n" + "H - Home");
 
-            // for ledger options
-            // going to call method inside home screen method :D
             ledgerScreenOptions = reader.nextLine();
             switch (ledgerScreenOptions.toUpperCase()) {
-                case "A": // display all entries (displaying all objects, is an array needed?)
+                case "A": // display all entries
                     LedgerScreen.displayAllEntries();
                     break;
                 case "D":

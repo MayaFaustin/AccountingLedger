@@ -16,10 +16,10 @@ public class ReportsScreen {
     static DateTimeFormatter tf = DateTimeFormatter.ofPattern("HH:mm:ss");
     static String date = dateToday.format(df);
     static String time = timeToday.format(tf);
+
     public static void displayReports() throws FileNotFoundException {
         String reportOptions;
         do {
-
             System.out.println("Welcome to your reports. Please select one of the following options: " +
                     "\n" + "1 - Month to Date" +
                     "\n" + "2 - Previous Month" +
@@ -51,7 +51,6 @@ public class ReportsScreen {
                     System.out.println("That is not a valid selection. Please try again.");
             }
         } while (!reportOptions.equals("0"));
-
     }
 
     public static void searchVendor(){
@@ -61,9 +60,10 @@ public class ReportsScreen {
             BufferedReader bufReader = new BufferedReader(new FileReader("transactions.csv"));
             String input = bufReader.readLine();
             while ((input = bufReader.readLine()) != null) {
-                //splitting the fields to get amount
+                //splitting the fields just to get the vendor
                 String[] splittingFields = input.split("\\|");
                 String vendor = splittingFields[3];
+                // if statement so that only entries that are equal to the vendor are returned
                 if (vendor.equalsIgnoreCase(vendorSearch)) {
                     System.out.println(input);
                 }
@@ -97,11 +97,13 @@ public class ReportsScreen {
         try {
             BufferedReader bufReader = new BufferedReader(new FileReader("transactions.csv"));
             String input = bufReader.readLine();
+            // creating variable for the previous month
             LocalDate previousMonth = LocalDate.now().minusMonths(1);
             while((input = bufReader.readLine()) != null) {
                 String[] splittingFields = input.split("\\|");
                 String splitDate = splittingFields[0];
                 LocalDate date = LocalDate.parse(splitDate, df);
+                // only entries where the month equals the previous month and year
                 if ((date.getMonth() == previousMonth.getMonth() && date.getYear() == previousMonth.getYear())) {
                     System.out.println(input);
                 }
@@ -123,6 +125,7 @@ public class ReportsScreen {
                 String[] splittingFields = input.split("\\|");
                 String splitDate = splittingFields[0];
                 LocalDate date = LocalDate.parse(splitDate, df);
+                // only displays entries of the current year
                 if ((date.getYear() == Year.getYear())) {
                     System.out.println(input);
                 }
@@ -137,11 +140,13 @@ public class ReportsScreen {
         try {
             BufferedReader bufReader = new BufferedReader(new FileReader("transactions.csv"));
             String input = bufReader.readLine();
+            // creating variable for the previous year
             LocalDate previousYear = LocalDate.now().minusYears(1);
             while((input = bufReader.readLine()) != null) {
                 String[] splittingFields = input.split("\\|");
                 String splitDate = splittingFields[0];
                 LocalDate date = LocalDate.parse(splitDate, df);
+                // only if the year equals the previous year, the entry will be shown
                 if ((date.getYear() == previousYear.getYear())) {
                     System.out.println(input);
                 }
