@@ -51,7 +51,6 @@ public class Main {
                     System.out.println("That is not a valid selection. Please try again.");
             }
         }
-
     }
 
     public static void makeDeposit() {
@@ -71,7 +70,6 @@ public class Main {
             BufferedWriter bufWriter = new BufferedWriter(fileWriter);
             bufWriter.write(transactions);
             bufWriter.newLine();
-            //allTransactions.add(new Transactions("","","","",0));
             System.out.println("Success! A new deposit was added :D");
             bufWriter.close();
         } catch (IOException e) {
@@ -203,7 +201,7 @@ public class Main {
         }
     }
 
-    public static void displayReports() {
+    public static void displayReports() throws FileNotFoundException {
         String reportOptions;
         do {
 
@@ -218,16 +216,16 @@ public class Main {
             // reader.nextLine();
             switch (reportOptions) {
                 case "1":
-                    System.out.println("testing1");
+                    displayMonthToDate();
                     break;
                 case "2":
-                    System.out.println("testing2");
+                    displayPreviousMonth();
                     break;
                 case "3":
-                    System.out.println("testing3");
+                    displayYearToDate();
                     break;
                 case "4":
-                    System.out.println("testing4");
+                    displayPreviousYear();
                     break;
                 case "5":
                     searchVendor();
@@ -240,6 +238,7 @@ public class Main {
         } while (!reportOptions.equals("0"));
 
     }
+
     public static void searchVendor(){
         System.out.println("Please enter the vendor here:");
         String vendorSearch = reader.nextLine();
@@ -259,22 +258,87 @@ public class Main {
             throw new RuntimeException(e);
         }
     }
-//    public static void displayMonthToDate(){
-//        try {
-//            BufferedReader bufReader = new BufferedReader(new FileReader("transactions.csv"));
-//            String input = bufReader.readLine();
-//            while((input = bufReader.readLine()) != null) {
-//                String[] splittingFields = input.split("\\|");
-//                String date = splittingFields[0];
-//                String time = splittingFields[1];
-//                String description = splittingFields[2];
-//                String vendor = splittingFields[3];
-//                double amount = Double.parseDouble(splittingFields[4]);
-//                Transactions t = new Transactions(date, time, description, vendor, amount);
-//                if (t.getDate().compareTo();
-//                }
-//            }
-//            bufReader.close();
-//        } catch (Exception e) {
-//            throw new RuntimeException(e);
+
+    public static void displayMonthToDate() throws FileNotFoundException {
+        try {
+            BufferedReader bufReader = new BufferedReader(new FileReader("transactions.csv"));
+            String input = bufReader.readLine();
+            while((input = bufReader.readLine()) != null) {
+                String[] splittingFields = input.split("\\|");
+                String splitDate = splittingFields[0];
+                LocalDate date = LocalDate.parse(splitDate, df);
+                if ((date.getMonth() == LocalDate.now().getMonth() && date.getYear() == LocalDate.now().getYear())) {
+                    System.out.println(input);
+                }
+            }
+        bufReader.close();
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void displayPreviousMonth(){
+        try {
+            BufferedReader bufReader = new BufferedReader(new FileReader("transactions.csv"));
+            String input = bufReader.readLine();
+            LocalDate previousMonth = LocalDate.now().minusMonths(1);
+            while((input = bufReader.readLine()) != null) {
+                String[] splittingFields = input.split("\\|");
+                String splitDate = splittingFields[0];
+                LocalDate date = LocalDate.parse(splitDate, df);
+                if ((date.getMonth() == previousMonth.getMonth() && date.getYear() == previousMonth.getYear())) {
+                    System.out.println(input);
+                }
+            }
+            bufReader.close();
+
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void displayYearToDate(){
+        try {
+            BufferedReader bufReader = new BufferedReader(new FileReader("transactions.csv"));
+            String input = bufReader.readLine();
+            LocalDate Year = LocalDate.now();
+            while((input = bufReader.readLine()) != null) {
+                String[] splittingFields = input.split("\\|");
+                String splitDate = splittingFields[0];
+                LocalDate date = LocalDate.parse(splitDate, df);
+                if ((date.getYear() == Year.getYear())) {
+                    System.out.println(input);
+                }
+            }
+            bufReader.close();
+
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void displayPreviousYear(){
+        try {
+            BufferedReader bufReader = new BufferedReader(new FileReader("transactions.csv"));
+            String input = bufReader.readLine();
+            LocalDate previousYear = LocalDate.now().minusYears(1);
+            while((input = bufReader.readLine()) != null) {
+                String[] splittingFields = input.split("\\|");
+                String splitDate = splittingFields[0];
+                LocalDate date = LocalDate.parse(splitDate, df);
+                if ((date.getYear() == previousYear.getYear())) {
+                    System.out.println(input);
+                }
+            }
+            bufReader.close();
+
+
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+   }
 }
